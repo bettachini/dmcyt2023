@@ -33,9 +33,10 @@
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
 
-% \usepackage[spanish, es-tabla]{babel}
+\usepackage[spanish, es-tabla]{babel}
 
 \usepackage[pdftex]{graphicx}
+\usepackage{subcaption}
 \graphicspath{{./graphs/}}
 
 %% biblatex
@@ -74,8 +75,14 @@ Cuca.
 \end{abstract}
 
 
-\section{Introducción}
+% Enunciado
+% Se sugiere realizar la entrega en formato latex, pero en este caso va a ser optativo (en el TP ya es obligatorio, sugerimos que lo usen de práctica). Pueden acceder a formatos de distintas conferencias a través de Overleaf, en particular les sugerimos el formato de NeurIPS que es una de las conferencias más importantes en IA.
+% Se sugiere un máx de 4 carillas (mín 2), no se debe incluir código a menos que sea algo esencial que hayan desarrollado ustedes (es preferible en este caso incluir el pseudo-código). Aclaración: No vamos a corregir código en la entrega.
+% El pre TP es individual.
 
+
+\section{Introducción}
+Cuca
 
 
 \section{Materiales y métodos}
@@ -98,6 +105,10 @@ Este explotó funciones de las bibliotecas OpenCV (\verb'cv2') y Clustimage para
 % Cada actividad realizada se describe bajo los titulos que figuran en el enunciado del trabajo práctico publicado en el
 
 % Cargar el dataset y sus respectivas etiquetas. Es importante asegurarse que las imágenes sean comparables en color, valor, rango y tamaño.
+\paragraph{Carga del conjunto de datos} 
+La función \verb'cv2.imread' carga los canales es azúl, verde, rojo (BGR: blue, green, red).
+Invertiendo la carga en un array (arreglo de la biblioteca numpy) se los ordena como RGB con la sentencia \verb'cv2.imread(path[0])[...,::-1]', en este caso para la primer imagen en el directorio al que apunta \verb'path'.
+La \hyperref[fg:path0]{figura \ref*{fg:path0}} muestra en colores naturales la imagen generada a partir del array por la función \verb'imshow' de la biblioteca matplotlib.
 
 % Explorar y graﬁcar los subconjuntos de imágenes que representan ﬂores de la misma especie
 
@@ -107,9 +118,11 @@ Este explotó funciones de las bibliotecas OpenCV (\verb'cv2') y Clustimage para
 
 % Cambiar la intensidad de una de las imágenes en escala de grises, transformarla en una imagen con mucho y otra con poco brillo.
 \paragraph{Escala de grises}
-Conocido el orden en que la función \verb'cv2.imread' carga los canales es azúl, verde, rojo (BGR: blue, green, red), se utilizó la combinación lineal que preserva la luminancia perceptual de la codificación de color sRGB de la Commission Internationale de l'éclairage en 1931 según el consorcio W3 \cite{noauthor_standard_1996} $
+Se utilizó la combinación lineal que preserva la luminancia perceptual de la codificación de color sRGB de la Commission Internationale de l'éclairage en 1931 según el consorcio W3 \cite{noauthor_standard_1996} $
 Y_\mathrm{lineal} = 0.2126 R_\mathrm{lineal} + 0.7152 G_\mathrm{lineal} + 0.0722 B_\mathrm{lineal} .
 $
+La \hyperref[fg:imgGrau]{figura \ref*{fg:imgGrau}} muestra la luminancia obtenida en una escala lineal de grises.
+
 
 \paragraph{Brillo}
 En la documentación de OpenCV se indica que el ajuste de contraste y brillo se realiza con una función lineal \cite{noauthor_opencv_nodate}
@@ -117,16 +130,77 @@ $
 Y_\mathrm{lineal final} = \alpha Y_\mathrm{lineal inicial} + \beta ,
 $
 donde $\alpha$ la ganancia controla el contraste y $\beta$ el sesgo controla el brillo.
+Pero como lo que se muestra con imshow siempre está normalizado entre máximo y mínimo, resultando en una imagen indistingiblede la original.
+
+Para observar una variación del brillo utilizaré una función exponencial aplicada al valor normalizado de la luminancia.
+Puesto que los niveles en cada color está estratificado en 8 bits al normalizar por 255 la luminancia está acotada al intervalo $[0,1]$.
+Un exponente mayor que la unidad redundará en reducir la luminancia, como ejemplifica la \hyperref[fg:imgGrau3p5exp]{figura \ref*{fg:imgGrau3p5exp}} para un exponente de \(3.5\).
+El efecto contrario se obtiene con el mismo proceder pero con un exponente como \(0.4\) cuyo redundó en la \hyperref[fg:imgGrau0p4exp]{figura \ref*{fg:imgGrau0p4exp}}. 
+
+
+
 
 % Convertir una de las imágenes a blanco y negro (binario). ¿Es la única manera? Si existen otras transformaciones mostrar más de una conversión.
+\paragraph{Imágen binarizada}	
+Se creó una matríz de ceros de la misma dimensión que la de luminancia.
+A los píxeles con valores por sobre la mediana (\verb'statistics.median') se les asigno el valor unidad en la nueva matriz que se muestra en la \hyperref[fg:imgGrau0binarizada]{figura \ref*{fg:imgGrau0binarizada}}
+
+
+
+
+
 
 % Recortar una parte signiﬁcativa de la imagen, quedándose sólo con el círculo central de la misma.
+\paragraph{recorte círculo}
+Nuevamente partiendo de la matriz de ceros, se copian píxeles de la imagen original cuando se cumple una condición con un valor de radio \(r\) del cuatro del número de columnas.
+La condición define un círculo centrado, pues \((i- i_0)^2 + (j- j_0)^2 < r^2\) con \((i,j)\) e \((i_0, j_0)\) filas y columnas del arreglo y sus valores centrales respectivamente.
+Con esto se obtiene la \hyperref[fg:circle]{figura \ref*{fg:circle}}. 
+
 
 % Generar dos imágenes random: una imagen mezclando los pixels y otra mezclando partes de diferentes imágenes.
 
 % Aplicar dos tipos diferentes de ﬁltros sobre una imagen, explique en qué casos conviene usar cada uno.
 
 % Calcular imagen promedio global y el promedio entre las distintas especies. ¿Se pueden distinguir los promedios? ¿Cómo quedan los promedios si consideran las imágenes en blanco y negro?
+
+
+
+\begin{figure}
+  \centering
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{path0}
+		\caption{Original}
+		\label{fg:path0}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{imgGrau}
+		\caption{Solo luminancia}
+		\label{fg:imgGrau}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{imgGrau3p5exp}
+		\caption{Oscurecida}
+		\label{fg:imgGrau3p5exp}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{imgGrau0p4exp}
+		\caption{Abrillantada}
+		\label{fg:imgGrau0p4exp}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{imgGrau0binarizada}
+		\caption{Binarizada}
+		\label{fg:imgGrau0binarizada}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{circle}
+		\caption{Viñetado}
+		\label{fg:circle}
+	\end{subfigure}
+	\caption{Procesamientos de la primer imagen en el conjunto de datos}
+\end{figure}
+
+
 
 \subsection{Búsqueda de \emph{features}}
 
