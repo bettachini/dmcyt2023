@@ -7,7 +7,7 @@
 
 
 % ready for submission
-\usepackage[final]{neurips_2023}
+\usepackage[final, nonatbib]{neurips_2023}
 
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
@@ -33,8 +33,25 @@
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
 
+% \usepackage[spanish, es-tabla]{babel}
+
 \usepackage[pdftex]{graphicx}
 \graphicspath{{./graphs/}}
+
+%% biblatex
+\usepackage[style = numeric, backend = biber, sorting = none, doi = false, isbn = false, url = true]{biblatex}
+% \usepackage[defernumbers = true, style = numeric, backend = biber, sorting = none, doi = false, isbn = false, url = true]{biblatex}
+% \usepackage[style = numeric, backend = biber, sorting = none]{biblatex}    % REFERENCIAS como section
+\AtEveryBibitem{
+    \clearfield{urlyear}
+    \clearfield{urlmonth}
+} % Do not show the "(visited on <date>)" on the references
+\DefineBibliographyStrings{spanish}{}
+\usepackage{csquotes}
+\addbibresource{./dataminingCyT.bib}
+\renewcommand*{\bibfont}{\fontsize{9}{12}\selectfont}
+
+
 
 \title{Procesamiento de imágenes (pre TP1)}
 
@@ -66,11 +83,11 @@ Cuca.
 \paragraph{Datos}
 210 imágenes de flores acompañados de un listado de las correspondientes especies dentro de una variedad de 10.
 Las imágenes en formato png tienen una dimensión de 128 x 128 píxeles con tres canales de color.
-El conjunto se descargó de una fuente pública [2].
+El conjunto se descargó de una fuente pública \cite{belitskaya_flower_2020}.
 
 
 \paragraph{Recurso informático} 
-Un cuaderno (notebook) Jupyter provisto por los docentes en el sitio web denominado ``Campus'' [1] es la plantilla donde se escribió código en lenguaje Python.
+Un cuaderno (notebook) Jupyter provisto por los docentes en el sitio web denominado ``Campus'' \cite{kamienkowski_curso_2023} es la plantilla donde se escribió código en lenguaje Python.
 Este explotó funciones de las bibliotecas OpenCV (\verb'cv2') y Clustimage para el trabajo con imágenes.
 % Se modificó el sendero a los archivos para indicar un directorio en un sistema de archivos local de una computadora local para ejecutarle con mayor velocidad.
 
@@ -90,12 +107,12 @@ Este explotó funciones de las bibliotecas OpenCV (\verb'cv2') y Clustimage para
 
 % Cambiar la intensidad de una de las imágenes en escala de grises, transformarla en una imagen con mucho y otra con poco brillo.
 \paragraph{Escala de grises}
-Conocido el orden en que la función \verb'cv2.imread' carga los canales es azúl, verde, rojo (BGR: blue, green, red), se utilizó la combinación lineal que preserva la luminancia perceptual de la codificación de color sRGB de la Commission Internationale de l'éclairage en 1931 según el consorcio W3 \cite{cosa}, $
+Conocido el orden en que la función \verb'cv2.imread' carga los canales es azúl, verde, rojo (BGR: blue, green, red), se utilizó la combinación lineal que preserva la luminancia perceptual de la codificación de color sRGB de la Commission Internationale de l'éclairage en 1931 según el consorcio W3 \cite{noauthor_standard_1996} $
 Y_\mathrm{lineal} = 0.2126 R_\mathrm{lineal} + 0.7152 G_\mathrm{lineal} + 0.0722 B_\mathrm{lineal} .
 $
 
 \paragraph{Brillo}
-En la documentación de OpenCV [cosa] se indica que el ajuste de contraste y brillo se realiza con una función lineal
+En la documentación de OpenCV se indica que el ajuste de contraste y brillo se realiza con una función lineal \cite{noauthor_opencv_nodate}
 $
 Y_\mathrm{lineal final} = \alpha Y_\mathrm{lineal inicial} + \beta ,
 $
@@ -118,7 +135,9 @@ donde $\alpha$ la ganancia controla el contraste y $\beta$ el sesgo controla el 
 % Realizar una inspección de las componentes principales del dataset y analizar si se pueden identiﬁcar las especies en esta representación.
 
 \paragraph{Análisis de componentes principales}
-Una centena de componentes principales por imagen se obtuvieron con el método \verb'exctract_feat' [3].
+Una centena de componentes principales por imagen se obtuvieron con el método \verb'exctract_feat' \cite{taskesen_pca_2020}.
+
+
 
 
 \section{Discusión}
@@ -129,28 +148,7 @@ Una centena de componentes principales por imagen se obtuvieron con el método \
   \caption{Ubicación de cada imágen en componentes principales(tsne plot)}
 \end{figure}
 
-\section*{References}
 
-\medskip
-{
-\small
+\printbibliography[title= Referencias, heading=bibintoc]
 
-[1] Kamienkowski, J.A.\ \& \emph{et al.} (2023) {\it Campus de Datamining en ciencia y tecnología}, \url{https://datamining.dc.uba.ar/campus/course/view.php?id=37}
-
-[2] Olga Belitskaya (2020, última actualización) Flower Color Images, {\it Kaggle}, \url{https://www.kaggle.com/olgabelitskaya/flower-color-images}
-
-[3] Taskesen, E. (2020) PCA, {\it clustimage's documentation!}, \url{https://erdogant.github.io/clustimage/pages/html/Feature%20Extraction.html}
-}
-
-[4] Changing the contrast and brightness of an image \url{https://docs.opencv.org/3.4/d3/dc1/tutorial_basic_linear_transform.html} 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \bibliographystyle{unsrt}
-% \bibliography{bibliography}
-\begin{thebibliography}{9}
-\bibitem{cosa}
-Stokes, Michael; Anderson, Matthew; Chandrasekar, Srinivasan; Motta, Ricardo (1996-11-05). "A Standard Default Color Space for the Internet – sRGB". World Wide Web Consortium – Graphics on the Web. Part 2, matrix in equation 1.8. Archived from the original on 2023-05-24.
-  \url{https://www.w3.org/Graphics/Color/sRGB}
-\end{thebibliography}
-
-
-  \end{document}
+\end{document}
