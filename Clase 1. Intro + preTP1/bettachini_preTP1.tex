@@ -81,9 +81,7 @@ Cuca.
 % El pre TP es individual.
 
 
-\section{Introducción}
-Cuca
-
+% \section{Introducción}
 
 \section{Materiales y métodos}
 
@@ -122,22 +120,40 @@ Se utilizó la combinación lineal que preserva la luminancia perceptual de la c
 Y_\mathrm{lineal} = 0.2126 R_\mathrm{lineal} + 0.7152 G_\mathrm{lineal} + 0.0722 B_\mathrm{lineal} .
 $
 La \hyperref[fg:imgGrau]{figura \ref*{fg:imgGrau}} muestra la luminancia obtenida en una escala lineal de grises.
+Alternativamente la función \verb'cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)' genera similar producto.
+Esto lo muestran los histogamas de ambas alternativas (ver \hyperref[fg:grayHist]{figura \ref*{fg:grayHist}}).
 
 
 \paragraph{Brillo}
-En la documentación de OpenCV se indica que el ajuste de contraste y brillo se realiza con una función lineal \cite{noauthor_opencv_nodate}
+Aplicar una función lineal 
 $
-Y_\mathrm{lineal final} = \alpha Y_\mathrm{lineal inicial} + \beta ,
+Y_\mathrm{salida} = \alpha Y_\mathrm{entrada} + \beta ,
 $
-donde $\alpha$ la ganancia controla el contraste y $\beta$ el sesgo controla el brillo.
-Pero como lo que se muestra con imshow siempre está normalizado entre máximo y mínimo, resultando en una imagen indistingiblede la original.
+donde $\alpha$ la ganancia controla el contraste y $\beta$ el sesgo controla el brillo modifica el histograma de luminancia \cite{noauthor_opencv_nodate}.
+Un \(beta \gg 0\) hace que \(Y_\mathrm{salida}> 255\), pero se le asigna \(255\).
+Esto produce saturación (ver figura \hyperref[fg:saturada]{figura \ref*{fg:saturada}}).
+Para evitarle se utiliza una ley de potencias
+\(
+Y_\mathrm{salida} = 255 \left( \frac{Y_\mathrm{entrada}}{255} \right)^\gamma  
+\)
+conocida como corrección gamma por el exponente utilizado.
+Un \(\gamma= 0.4\) redundó en la \hyperref[fg:imgGrau0p4exp]{figura \ref*{fg:imgGrau0p4exp}}, que muestra mayor brillo sin saturación (ver figura \hyperref[fg:brightHist]{figura \ref*{fg:brightHist}}).
+Se reduce la luminancia con un \(\gamma >1\), como ejemplifica la \hyperref[fg:imgGrau3p5exp]{figura \ref*{fg:imgGrau3p5exp}} para \(\gamma = 3.5\).
 
-Para observar una variación del brillo utilizaré una función exponencial aplicada al valor normalizado de la luminancia.
-Puesto que los niveles en cada color está estratificado en 8 bits al normalizar por 255 la luminancia está acotada al intervalo $[0,1]$.
-Un exponente mayor que la unidad redundará en reducir la luminancia, como ejemplifica la \hyperref[fg:imgGrau3p5exp]{figura \ref*{fg:imgGrau3p5exp}} para un exponente de \(3.5\).
-El efecto contrario se obtiene con el mismo proceder pero con un exponente como \(0.4\) cuyo redundó en la \hyperref[fg:imgGrau0p4exp]{figura \ref*{fg:imgGrau0p4exp}}. 
-
-
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width= \textwidth]{grayHist}
+		\caption{Escala de grises.}
+		\label{fg:grayHist}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width= \textwidth]{brightHist}
+		\caption{Incremento brillo.}
+		\label{fg:brightHist}
+	\end{subfigure}
+	\caption{Comparación de histogramas.}
+\end{figure}
 
 
 % Convertir una de las imágenes a blanco y negro (binario). ¿Es la única manera? Si existen otras transformaciones mostrar más de una conversión.
@@ -151,22 +167,14 @@ A los píxeles con valores por sobre la mediana (\verb'statistics.median') se le
 
 
 % Recortar una parte signiﬁcativa de la imagen, quedándose sólo con el círculo central de la misma.
-\paragraph{recorte círculo}
-Nuevamente partiendo de la matriz de ceros, se copian píxeles de la imagen original cuando se cumple una condición con un valor de radio \(r\) del cuatro del número de columnas.
-La condición define un círculo centrado, pues \((i- i_0)^2 + (j- j_0)^2 < r^2\) con \((i,j)\) e \((i_0, j_0)\) filas y columnas del arreglo y sus valores centrales respectivamente.
-Con esto se obtiene la \hyperref[fg:circle]{figura \ref*{fg:circle}}. 
-
-
-% Generar dos imágenes random: una imagen mezclando los pixels y otra mezclando partes de diferentes imágenes.
-
-% Aplicar dos tipos diferentes de ﬁltros sobre una imagen, explique en qué casos conviene usar cada uno.
-
-% Calcular imagen promedio global y el promedio entre las distintas especies. ¿Se pueden distinguir los promedios? ¿Cómo quedan los promedios si consideran las imágenes en blanco y negro?
-
+\paragraph{Recorte circular}
+Se generó un arreglo con tres matrices de ceros sobre las que se copiarian píxeles de la imagen original de cumplire una condición en función de un radio \(r\) del cuatro del número de columnas.
+La condición define un círculo centrado con \((i- i_0)^2 + (j- j_0)^2 < r^2\) siendo \((i,j)\) e \((i_0, j_0)\) filas y columnas del arreglo y sus valores centrales respectivamente.
+Aplicando la condición en los tres canales de color se obtuvo el viñetado con un círculo de diámetro mitad del ancho de la imágen que muestra la \hyperref[fg:circle]{figura \ref*{fg:circle}}. 
 
 
 \begin{figure}
-  \centering
+	\centering
 	\begin{subfigure}[b]{0.24\textwidth}
 		\includegraphics[width= \textwidth]{path0}
 		\caption{Original}
@@ -178,14 +186,19 @@ Con esto se obtiene la \hyperref[fg:circle]{figura \ref*{fg:circle}}.
 		\label{fg:imgGrau}
 	\end{subfigure}
 	\begin{subfigure}[b]{0.24\textwidth}
-		\includegraphics[width= \textwidth]{imgGrau3p5exp}
-		\caption{Oscurecida}
-		\label{fg:imgGrau3p5exp}
+		\includegraphics[width= \textwidth]{saturada}
+		\caption{Saturada}
+		\label{fg:saturada}
 	\end{subfigure}
 	\begin{subfigure}[b]{0.24\textwidth}
 		\includegraphics[width= \textwidth]{imgGrau0p4exp}
 		\caption{Abrillantada}
 		\label{fg:imgGrau0p4exp}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{imgGrau3p5exp}
+		\caption{Oscurecida}
+		\label{fg:imgGrau3p5exp}
 	\end{subfigure}
 	\begin{subfigure}[b]{0.24\textwidth}
 		\includegraphics[width= \textwidth]{imgGrau0binarizada}
@@ -202,19 +215,167 @@ Con esto se obtiene la \hyperref[fg:circle]{figura \ref*{fg:circle}}.
 
 
 
+% Generar dos imágenes random: una imagen mezclando los pixels y otra mezclando partes de diferentes imágenes.
+
+\paragraph{Aleatorizar imagen} 
+Copiar píxeles de la imagen original con \verb'imgAzar[i,j,c] = img[ indices[i*j][0], indices[i*j]' dentro de dos ciclos for anidados siendo \((i,j)\) los  de una lista aleatorizada produjo una imagen que visualmente muestra tener estructura (ver \hyperref[fg:alea1]{figura \ref*{fg:alea1}}).
+
+La \hyperref[fg:alea2]{figura \ref*{fg:alea2}} muestra en este aspecto un mejor resultado.
+Para lograrle se pasaron las valores para cada color en tres vectores y cuyos ordenemientos fueron simultáneamente cambiados al azar.
+Luego se reconstruyeron las tres matrices en el orden original.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{alea1}
+		\caption{Reordenar índices}
+		\label{fg:alea1}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{alea2}
+		\caption{Mezclar píxeles}
+		\label{fg:alea2}
+	\end{subfigure}
+	\caption{Aleatorización de la primer imagen en el conjunto de datos a nivel de píxeles individuales.}
+\end{figure}
+
+
+% Aplicar dos tipos diferentes de ﬁltros sobre una imagen, explique en qué casos conviene usar cada uno.
+\paragraph{Filtros} 
+Se convoluciona un núcleo (matriz normalizada) con una imagen usando \verb'cv2.filter2D'.
+Un núcleo que asigna un promedio con primeros vecinos, \(
+\frac{1}{9} \left[ {\begin{array}{ccc}
+	1 & 1 & 1 \\
+	1 & 1 & 1 \\
+	1 & 1 & 1 \\
+\end{array} } \right]
+\), logró el difuminado que muestra la \hyperref[fg:difuminado]{figura \ref*{fg:difuminado}}.
+El efecto opuesto, la agudización que muestra la \hyperref[fg:agudizado]{figura \ref*{fg:agudizado}}, se logró con \(
+\left[ {\begin{array}{ccc}
+	0 & -1 & 0 \\
+	-1 & 5 & -1 \\
+	0 & -1 & 0 \\
+\end{array} } \right].
+\)
+La \hyperref[fg:laplaciano]{figura \ref*{fg:laplaciano}} muestra solo los bordes.
+Es producto de utilizar el nucleo Laplaciano obtenido con solo restar $1$ al elemento central del anterior \cite{noauthor_opencv_nodate-1}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{path0}
+		\caption{Original}
+		\label{fg:original}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{difuminado}
+		\caption{Difuminado}
+		\label{fg:difuminado}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{agudizado}
+		\caption{Agudizado}
+		\label{fg:agudizado}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.24\textwidth}
+		\includegraphics[width= \textwidth]{laplaciano}
+		\caption{Laplaciano}
+		\label{fg:laplaciano}
+	\end{subfigure}
+	\caption{Filtros aplicados a la primer imagen en el conjunto de datos.}
+\end{figure}
+
+
+
+% Calcular imagen promedio global y el promedio entre las distintas especies. ¿Se pueden distinguir los promedios? ¿Cómo quedan los promedios si consideran las imágenes en blanco y negro?
+
+\paragraph{Promedio de imágenes} Los promedios de las imágenes por sus 10 etiquetas de especie en la \hyperref[fg:promedios]{figura \ref*{fg:promedios}}) aunque sean diferenciables por inspección directa, potencialmente podrían confudirse.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave0}
+		\caption{0}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave1}
+		\caption{1}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave2}
+		\caption{2}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave3}
+		\caption{3}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave4}
+		\caption{4}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave5}
+		\caption{5}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave6}
+		\caption{6}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave7}
+		\caption{7}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave8}
+		\caption{8}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.09\textwidth}
+		\includegraphics[width= \textwidth]{ave9}
+		\caption{9}
+	\end{subfigure}
+	\caption{Promedio de imágenes de ídentica etiqueta de especie.}
+	\label{fg:promedios}
+\end{figure}
+
+
+
 \subsection{Búsqueda de \emph{features}}
 
 % Analizar las distribuciones de valores de pixels por cada especie. ¿Se puede distinguir una especie en algún rango de color?
+\paragraph{Distribuciones por especie} La \hyperref[fg:promediosBox]{figura \ref*{fg:promediosBox}}) muestra que algunas especies pueden diferenciarse entre sí viendo un color en particular, pero en ningún caso entre todas.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width= \textwidth]{rot}
+		\caption{Rojo}
+		\label{fg:rot}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width= \textwidth]{grün}
+		\caption{Verde}
+		\label{fg:grün}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width= \textwidth]{blau}
+		\caption{Azul}
+		\label{fg:blau}
+	\end{subfigure}
+	\caption{Distribución de colores por etiqueta de especie.}
+	\label{fg:promediosBox}
+\end{figure}
+
+
 
 % Realizar una inspección de las componentes principales del dataset y analizar si se pueden identiﬁcar las especies en esta representación.
 
 \paragraph{Análisis de componentes principales}
-Una centena de componentes principales por imagen se obtuvieron con el método \verb'exctract_feat' \cite{taskesen_pca_2020}.
+Una centena de componentes principales por imagen se obtuvieron con el método \verb'extract_feat' \cite{taskesen_pca_2020}.
 
 
 
 
-\section{Discusión}
+% \section{Discusión}
 
 \begin{figure}
   \centering
