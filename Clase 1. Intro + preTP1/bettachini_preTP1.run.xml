@@ -79,7 +79,7 @@
       <file>bettachini_preTP1.bcf</file>
     </requires>
     <requires type="editable">
-      <file>./dataminingCyT.bib</file>
+      <file>./dmcyt.bib</file>
     </requires>
   </external>
 </requests>
