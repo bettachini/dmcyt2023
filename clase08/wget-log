@@ -1,0 +1,16 @@
+--2023-10-18 00:23:24--  https://www.dropbox.com/scl/fi/pu1qdch4c3khk0uol9l0w/aal_extended_withCoords.csv?rlkey=bsnfot3b9ycp7slble59e1cws
+Resolving www.dropbox.com (www.dropbox.com)... 162.125.4.18, 2620:100:601c:18::a27d:612
+Connecting to www.dropbox.com (www.dropbox.com)|162.125.4.18|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://uc313eb30747f8a44de129545885.dl.dropboxusercontent.com/cd/0/inline/CFx7vUPQd7rkF5wScX4n_Wo_6-zmX93IZdvOl_y_ZSFmQujA6eYkBBYWVpw18oX3Hkmjup0u5YBI9baRg8zdusByR1Y-rLXbKyEZsIg3u0dLTH-kkxUg_gXrBwdqqrF6hIrHDaQZZsjl1e7bVJpSKCPt/file# [following]
+--2023-10-18 00:23:24--  https://uc313eb30747f8a44de129545885.dl.dropboxusercontent.com/cd/0/inline/CFx7vUPQd7rkF5wScX4n_Wo_6-zmX93IZdvOl_y_ZSFmQujA6eYkBBYWVpw18oX3Hkmjup0u5YBI9baRg8zdusByR1Y-rLXbKyEZsIg3u0dLTH-kkxUg_gXrBwdqqrF6hIrHDaQZZsjl1e7bVJpSKCPt/file
+Resolving uc313eb30747f8a44de129545885.dl.dropboxusercontent.com (uc313eb30747f8a44de129545885.dl.dropboxusercontent.com)... 162.125.6.15, 2620:100:601c:15::a27d:60f
+Connecting to uc313eb30747f8a44de129545885.dl.dropboxusercontent.com (uc313eb30747f8a44de129545885.dl.dropboxusercontent.com)|162.125.6.15|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5051 (4.9K) [text/plain]
+Saving to: ‘aal_extended_withCoords.csv?rlkey=bsnfot3b9ycp7slble59e1cws’
+
+     0K ....                                                  100%  600M=0s
+
+2023-10-18 00:23:25 (600 MB/s) - ‘aal_extended_withCoords.csv?rlkey=bsnfot3b9ycp7slble59e1cws’ saved [5051/5051]
+
