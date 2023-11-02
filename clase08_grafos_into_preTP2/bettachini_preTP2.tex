@@ -36,6 +36,7 @@
 \usepackage[spanish, es-tabla]{babel}
 
 \usepackage[pdftex]{graphicx}
+\usepackage{pgf}
 \usepackage{subcaption}
 \graphicspath{{./graphs/}}
 
@@ -110,7 +111,8 @@ Estos estuvieron acompañados de una tabla que describe la denominacion y  ubica
 \subsection{Manipulación de datos}
 
 \paragraph{Matriz de correlación}
-Para las regiones en que se parcializó el cerebro se obtuve la matriz de adyacencia pesada que muestra la figura \ref{fg:matriz_correlación_pesada}.
+La matriz de adyacencia pesada que muestra la figura \ref{fg:matriz_correlación_pesada} corresponde a la condición de despierto para el sujeto número 2.
+
 Para convertirle en una de adyacencia binaria con una densidad de enlaces \(\delta = 0.8\) se discriminaron sus pesos con un umbral \(0.77997\) obteníendose la matriz que muestra la figura \ref{fg:matriz_correlación_binaria}.
 
 \begin{figure}[ht]
@@ -131,7 +133,48 @@ Para convertirle en una de adyacencia binaria con una densidad de enlaces \(\del
 \end{figure}
 
 
-% \section{Discusión}
+\paragraph{Grafo de la matriz de adyacencia binaria}
+No es totalmente conectado. Hay tres componentes conectadas de 92, 5 y 2 nodos en tanto que los 17 restantes están aislados.
+La distancia mínima entre nodos contabiliza cuantos intermedios deben atravesarse para ir de un nodo a otro.
+Esta medida para los aislados no tiene sentido, por lo en este grafo no puede obtenerse una distancia media $d$ a lo fines de tener una media de que tan ``conectado'' se presenta el grafo.
+Una medida númerica alternativa darla la densidad que cuantifica cuantos de los posibles enlaces están efectivmente presentes en el grafo.
+Para el conjunto, no conectado, este valor parece bajo, $\approx 8\%$.
+Y en el componente mayoritario, el de 92 nodos, este valor apenas se incrementa hasta un $\approx 12\%$. 
+
+
+\paragraph{Eficiencia de conectividad}
+La distancia mínima entre nodos contabiliza cuantos intermedios deben atravesarse para ir de un nodo a otro.
+Un promedio de la inversa de esta distancia es una medida de la eficiencia de conectividad global del grafo, que para este caso resultó ser $\approx 0.389$.
+
+
+\paragraph{Distribución de grado}
+El número de enlaces por nodo, o grado $k$, se distribuye en forma dispar.
+De un total de $534$ enlaces el grado mayor resultó $k_{máx} = 30$, y un relativamente alto promedio $\langle k \rangle \approx 9.207$ aunque no hay que olvidar que no participan aquí los nodos aislados.
+El histograma de $k$ que muestra la figura \ref{fg:hist_k} que este $\langle k \rangle$ es representativo de la distribución.
+
+En una medida similar a la densidad que cuenta la proporción de enlaces sobre los posibles puede hacerse algo similar calculando la proporción de cuantos de los posibles enlaces entre primeros vecinos efectivamente se realizan.
+Esto se denomina coeficiente de agrupamiento (clustering) por nodo $C_i$, cuyo promedio para este grafo es $\langle C_i \rangle \approx 0.527$. 
+Coloreando cada nodo según su $C_i$ y ubicandole por las coordenadas (y,z) en el cerebro se obtiene la figura \ref{fg:clustering}. 
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.25\textwidth}
+		\includegraphics[width= \linewidth]{histograma_k}
+		\caption{Histograma para $k$.
+		}
+		\label{fg:hist_k}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.7\textwidth}
+		\includegraphics[width= \linewidth]{clustering}
+		\caption{número de nodo $i$ y su $C_i$.
+		}
+		\label{fg:clustering}
+	\end{subfigure}
+	\caption{Distribución de grado y coeficiente de agrupamiento.
+	}
+	\label{fg:distribución_de_grado}
+\end{figure}
+
 
 \begin{figure}[ht]
   \centering
@@ -141,6 +184,12 @@ Para convertirle en una de adyacencia binaria con una densidad de enlaces \(\del
 	\label{fg:hist_poisson}
 \end{figure}
 
+
+\paragraph{Comparación con grafos propotípicos}
+
+
+
+% \section{Discusión}
 
 \printbibliography[title= Referencias, heading=bibintoc]
 
