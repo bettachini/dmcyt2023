@@ -87,9 +87,10 @@
 \section{Materiales y métodos}
 
 \paragraph{Datos}
-Se registró la señal de resonancia magnética funcional (fMRI) bajo distintos estadíos del sueño en distintas parcializaciones del cerebro. 
-Para segmentos temporales se calculó el coeficiente de correlación lineal entre sus medias \cite{tagliazucchi_large-scale_2013}.
-Estos son los datos de entrada con que se genera una matríz de correlación a partir de la cual se generan los grafos que se analizan en este trabajo.
+Se hace uso de datos producto de la medición de la señal de resonancia magnética funcional (fMRI).
+Definidos 116 volúmenes de interés del cerebro en términos de su activación \cite{tzourio-mazoyer_automated_2002}, se publicaron coeficientes de correlación lineal entre sus medias en distintos segmentos temporales \cite{tagliazucchi_large-scale_2013}.
+Con estos datos se generó una matríz de correlación, y a partir de la misma los grafos analizados en este trabajo.
+
 
 \paragraph{Recurso informático} 
 Un cuaderno (notebook) Jupyter provisto por los docentes en el sitio web denominado ``Campus'' \cite{kamienkowski_curso_2023} es la plantilla donde se escribió código en lenguaje Python.
@@ -113,21 +114,22 @@ Estos estuvieron acompañados de una tabla que describe la denominacion y  ubica
 \paragraph{Matriz de correlación}
 La matriz de adyacencia pesada que muestra la figura \ref{fg:matriz_correlación_pesada} corresponde a la condición de despierto para el sujeto número 2.
 
-Para convertirle en una de adyacencia binaria con una densidad de enlaces \(\delta = 0.8\) se discriminaron sus pesos con un umbral \(0.77997\) obteníendose la matriz que muestra la figura \ref{fg:matriz_correlación_binaria}.
+Una medida que caracteriza un grafo es la densidad, $\delta$, definida como la razón entre los enlaces presentes sobre todos los posibles en el grafo.
+Para convertir la matriz en una de adyacencia binaria con una densidad de enlaces \(\delta = 0.8\) se discriminaron sus pesos con un umbral \(0.77997\) obteníendose la matriz que muestra la figura \ref{fg:matriz_correlación_binaria}.
 
 \begin{figure}[ht]
 	\centering
-	\begin{subfigure}[b]{0.4\textwidth}
+	\begin{subfigure}[b]{0.39\textwidth}
 		\includegraphics[width= \linewidth]{matriz_correlación}
 		\caption{Pesada}
 		\label{fg:matriz_correlación_pesada}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.425\textwidth}
+	\begin{subfigure}[b]{0.33\textwidth}
 		\includegraphics[width= \linewidth]{matriz_correlación_binaria}
 		\caption{Binaria}
 		\label{fg:matriz_correlación_binaria}
 	\end{subfigure}
-	\caption{Matrices de correlación de las medias de las señales de las regiones parcializadas.
+	\caption{Matrices de correlación de las medias de las señales de las regiones parcializadas para el sujeto número 2 despierto. 
 	}
 	\label{fg:matriz_correlación}
 \end{figure}
@@ -137,7 +139,7 @@ Para convertirle en una de adyacencia binaria con una densidad de enlaces \(\del
 No es totalmente conectado. Hay tres componentes conectadas de 92, 5 y 2 nodos en tanto que los 17 restantes están aislados.
 La distancia mínima entre nodos contabiliza cuantos intermedios deben atravesarse para ir de un nodo a otro.
 Esta medida para los aislados no tiene sentido, por lo en este grafo no puede obtenerse una distancia media $d$ a lo fines de tener una media de que tan ``conectado'' se presenta el grafo.
-Una medida númerica alternativa darla la densidad que cuantifica cuantos de los posibles enlaces están efectivmente presentes en el grafo.
+Una medida númerica alternativa la provee la densidad.
 Para el conjunto, no conectado, este valor parece bajo, $\approx 8\%$.
 Y en el componente mayoritario, el de 92 nodos, este valor apenas se incrementa hasta un $\approx 12\%$. 
 
@@ -149,7 +151,7 @@ Un promedio de la inversa de esta distancia es una medida de la eficiencia de co
 
 \paragraph{Distribución de grado}
 El número de enlaces por nodo, o grado $k$, se distribuye en forma dispar.
-De un total de $534$ enlaces el grado mayor resultó $k_{máx} = 30$, y un relativamente alto promedio $\langle k \rangle \approx 9.207$ aunque no hay que olvidar que no participan aquí los nodos aislados.
+De un total de $534$ enlaces el grado mayor resultó $k_\textnormal{máx} = 30$, y un relativamente alto promedio $\langle k \rangle \approx 9.207$ aunque no hay que olvidar que no participan aquí los nodos aislados.
 El histograma de $k$ que muestra la figura \ref{fg:hist_k} que este $\langle k \rangle$ es representativo de la distribución.
 
 En una medida similar a la densidad que cuenta la proporción de enlaces sobre los posibles puede hacerse algo similar calculando la proporción de cuantos de los posibles enlaces entre primeros vecinos efectivamente se realizan.
@@ -176,20 +178,52 @@ Coloreando cada nodo según su $C_i$ y ubicandole por las coordenadas (y,z) en e
 \end{figure}
 
 
+\paragraph{Grafos prototípicos}
+Se generaron grafos aleatorios con la misma cantidad de nodos, $n = 116$ que el grafo de la matriz de adyacencia binaria a los fines de encontrar semejanzas y determinar cuál modelo que les dió origen sería el más apropiado para explicar la emergencia de la estructura del grafo producto de las mediciones.
+
+El modelo de red en que se cada par de nodos puede o no estrablecer un enlace si una probabilidad al azar supera un umbral es la que modela el algoritmo de Erdös–Rényi \cite[sección 3.2]{albert-laszlo_barabasi_network_2016}.
+Para que esta red semeje a la bajo estudio se estableció en función del $\langle k \rangle$ de la red original tal probabilidad como $p = \frac{\langle k \rangle}{n -1}$.
+La red generada presentó una densidad prácticamente idéntica $\delta = 0.0808$ vs $0.0801$ en la original con una suma de enlaces, $539$, muy cercana a la de la red original, $534$.
+Una inspección de la figura \ref{fg:erdos_renyi} de esta red azarosa mostró una diferencia crucial: está totalmente conectada.
+Esto es atípico en las redes reales que suelen estar particionadas en múltiples componentes conectadas \cite[sección 3.7]{albert-laszlo_barabasi_network_2016}.
+
+Si una red fuera perfectamente regular, donde todos los nodos tuvieran idéntica $k$, la distancia mínima entre dos nodos, es decir cuantos intermedios debe atravarse para enlazar uno con otro, seguiría una dependencia polinomial con $n$.
+En las redes reales se observa que esta dependencia es más bien con $\log(n)$, una marcada reducción en la distancia media $d$ fenómeno que recibe el nombre de ``mundo pequeño'' (small-world) por la sorpresiva poca distancia entre dos cualesquiera nodos de la red.
+Además en redes reales el coeficiente de agrupamiento $C_i$ suele ser más alto que en una red azarosa \cite[sección 3.9]{albert-laszlo_barabasi_network_2016}. 
+Watts y Strogatz propusieron una extensión del modelo azaroso con un parámetro adicional que determina la probabilidad de que un enlace cambie su enlace hacia otro nodo, lo que genera redes intermedias entre una azarosa y una regular.
+Con este parámetro de reconexión en $0.05$, el mismo $n$ y un número de enlaces al primer vecino fijo en cada nodo en el valor entero de $\langle k \rangle + 1$ la implementación de la biblioteca NetworkX generó un número de enlaces de $580$
+
+$\delta = 0.0808$ y $k = 539$.
+
+
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width= \linewidth]{erdos_renyi}
+		\caption{Azarosa}
+		\label{fg:erdos_renyi}
+	\end{subfigure}
+	\caption{Grafos prototípicos con número $n$ igual y $k$ similar a los de la red producto de las mediciones. 
+	}
+	\label{fg:prototípicas}
+\end{figure}
+
+
+
+
+\paragraph{Coeficientes de grafos propotípicos}
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width= \linewidth]{hist_poisson}
-  \caption{Poisson
-	}
+  \caption{Distribución de magnitudes que caracterizan las mil redes azarosas generadas.}
 	\label{fg:hist_poisson}
 \end{figure}
 
 
-\paragraph{Comparación con grafos propotípicos}
 
-
-
-% \section{Discusión}
+% \section{Discusión y conclusiones}
 
 \printbibliography[title= Referencias, heading=bibintoc]
 
