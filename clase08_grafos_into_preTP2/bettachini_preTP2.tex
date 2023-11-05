@@ -179,22 +179,24 @@ Coloreando cada nodo según su $C_i$ y ubicandole por las coordenadas (y,z) en e
 
 
 \paragraph{Grafos prototípicos}
-Se generaron grafos aleatorios con la misma cantidad de nodos, $n = 116$ que el grafo de la matriz de adyacencia binaria a los fines de encontrar semejanzas y determinar cuál modelo que les dió origen sería el más apropiado para explicar la emergencia de la estructura del grafo producto de las mediciones.
+Se generaron grafos aleatorios con la misma cantidad de nodos, $n = 116$ que el grafo de la matriz de adyacencia binaria a los fines de encontrar semejanzas y determinar cuál de estos explicaría la la estructura del grafo producto de las mediciones.
 
-El modelo de red en que se cada par de nodos puede o no estrablecer un enlace si una probabilidad al azar supera un umbral es la que modela el algoritmo de Erdös–Rényi \cite[sección 3.2]{albert-laszlo_barabasi_network_2016}.
-Para que esta red semeje a la bajo estudio se estableció en función del $\langle k \rangle$ de la red original tal probabilidad como $p = \frac{\langle k \rangle}{n -1}$.
-La red generada presentó una densidad prácticamente idéntica $\delta = 0.0808$ vs $0.0801$ en la original con una suma de enlaces, $539$, muy cercana a la de la red original, $534$.
-Una inspección de la figura \ref{fg:erdos_renyi} de esta red azarosa mostró una diferencia crucial: está totalmente conectada.
-Esto es atípico en las redes reales que suelen estar particionadas en múltiples componentes conectadas \cite[sección 3.7]{albert-laszlo_barabasi_network_2016}.
+El algoritmo de Erdös–Rényi enlaza un par de nodos si una probabilidad al azar supera un umbral \cite[sección 3.2]{albert-laszlo_barabasi_network_2016}.
+Estableciendo en función del $\langle k \rangle$ de la red original tal probabilidad como $p = \frac{\langle k \rangle}{n -1}$ se obtuvo una densidad prácticamente idéntica $\delta = 0.0808$ a la de la red original, $0.0801$, con una suma de enlaces, $539$, también muy cercana, $534$. 
+El coeficiente de agrupamiento $\langle C_i \rangle = 0.7986$ resulta bastante disímil con el $0.5271$ de la red original.
+Esta red azarosa, a diferencia de la original, mostró estar totalmente conectada, como se aprecia en la figura \ref{fg:erdos_renyi}. 
+En contrapartida, las redes reales suelen estar particionadas en múltiples componentes conectadas \cite[sección 3.7]{albert-laszlo_barabasi_network_2016}.
 
-Si una red fuera perfectamente regular, donde todos los nodos tuvieran idéntica $k$, la distancia mínima entre dos nodos, es decir cuantos intermedios debe atravarse para enlazar uno con otro, seguiría una dependencia polinomial con $n$.
-En las redes reales se observa que esta dependencia es más bien con $\log(n)$, una marcada reducción en la distancia media $d$ fenómeno que recibe el nombre de ``mundo pequeño'' (small-world) por la sorpresiva poca distancia entre dos cualesquiera nodos de la red.
-Además en redes reales el coeficiente de agrupamiento $C_i$ suele ser más alto que en una red azarosa \cite[sección 3.9]{albert-laszlo_barabasi_network_2016}. 
-Watts y Strogatz propusieron una extensión del modelo azaroso con un parámetro adicional que determina la probabilidad de que un enlace cambie su enlace hacia otro nodo, lo que genera redes intermedias entre una azarosa y una regular.
-Con este parámetro de reconexión en $0.05$, el mismo $n$ y un número de enlaces al primer vecino fijo en cada nodo en el valor entero de $\langle k \rangle + 1$ la implementación de la biblioteca NetworkX generó un número de enlaces de $580$
-
-$\delta = 0.0808$ y $k = 539$.
-
+Si una red fuera perfectamente regular ytodos los nodos tuvieran idéntica $k$, la distancia mínima entre dos nodos $d$, es decir cuantos intermedios debe atravezarse para enlazar uno con otro, seguiría una dependencia polinomial con $n$.
+En las redes reales $d$ presenta una dependencia mucho menor con $n$, con $\log(n)$ de hecho.
+Este fenómeno recibe el nombre de ``mundo pequeño'' (small-world) por la sorpresiva poca distancia entre dos cualesquiera nodos de la red.
+Asimismo, en las reales, el coeficiente de agrupamiento $C_i$ suele ser más alto que en una red azarosa \cite[sección 3.9]{albert-laszlo_barabasi_network_2016}. 
+En respuesta a estas observaciones, Watts y Strogatz extendieron el modelo ordenado con un $k$ regular con un parámetro adicional que determina la probabilidad de que un enlace cambie su enlace hacia otro nodo, generando redes intermedias entre una regular y una azarosa.
+El número de enlaces total más cercano al de la red original, $580$, se obtuvo con $k = \mathrm{int}(\langle k \rangle) + 1$. 
+Puesto que la $\delta = 0.870$ es insensible al parámetro de reconexión se lo ajustó buscando un $\langle C_i \rangle$ similar al de la red original.
+Este fluctua por efectos azarosos pero se logró que este oscilara en torno al $\approx 0.527$ con una probabilidad de reconexión de $0.815$.
+Pero la red generada se presenta totalmente conectada y con un aspecto muy diferente a la original, como muestra la figura \ref{fg:watts_strogatz}. 
+Se pude generar con el algoritmo de Watts-Strogatz una red con aspecto más similar incrementando la reconexión y así haciendola más azarosa y por tanto a la original, pero el resultante $\langle C_i \rangle$ se aleja del de esta.
 
 
 \begin{figure}[ht]
@@ -204,11 +206,15 @@ $\delta = 0.0808$ y $k = 539$.
 		\caption{Azarosa}
 		\label{fg:erdos_renyi}
 	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\includegraphics[width= \linewidth]{watts_strogatz}
+		\caption{Pequeño mundo}
+		\label{fg:watts_strogatz}
+	\end{subfigure}
 	\caption{Grafos prototípicos con número $n$ igual y $k$ similar a los de la red producto de las mediciones. 
 	}
 	\label{fg:prototípicas}
 \end{figure}
-
 
 
 
