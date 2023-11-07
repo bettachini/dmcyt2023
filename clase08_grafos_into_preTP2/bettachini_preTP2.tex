@@ -136,19 +136,21 @@ Para convertir la matriz en una de adyacencia binaria con una densidad de enlace
 
 
 \paragraph{Grafo de la matriz de adyacencia binaria}
-No es totalmente conectado. Hay tres componentes conectadas de 92, 5 y 2 nodos en tanto que los 17 restantes están aislados.
+No es totalmente conectado.
+Hay tres componentes conectadas de 92, 5 y 2 nodos en tanto que los 17 restantes están aislados.
 La distancia mínima entre nodos contabiliza cuantos intermedios deben atravesarse para ir de un nodo a otro.
 Esta medida para los aislados no tiene sentido, por lo en este grafo no puede obtenerse una distancia media $d$ a lo fines de tener una media de que tan ``conectado'' se presenta el grafo.
-Una medida numérica alternativa la provee la densidad.
-Para el conjunto, no conectado, este valor parece bajo, $\approx 8\%$.
-Y en el componente mayoritario, el de 92 nodos, este valor apenas se incrementa hasta un $\approx 12\%$. 
+Una medida alternativa es la eficiencia global.
+% Para el conjunto, no conectado, este valor parece bajo, $\approx 8\%$.
+% Y en el componente mayoritario, el de 92 nodos, este valor apenas se incrementa hasta un $\approx 12\%$. 
 
 
-\paragraph{Eficiencia de conectividad}
+\paragraph{Eficiencia global de conectividad}
 La suma de la inversa de es una medida de la eficiencia de conectividad global del grafo, $\mathrm{eff} = \frac{1}{n (n-1)} \sum_{i \neq j} \frac{1}{d(i,j)}$ \cite{ek_global_2015}.
 %Puesto que la razón de normalizar por $n (n-1)$ es para que la eficiencia de un grafo totalmente conectado sea $1$, en este grafo que no es totalmente conectado, realicé una estimación forma manual sobre la suma se realiza sobre los nodos que efectivamente están conectados.
 % Sumando la inversa de las distancias de los enlaces presentes y normalizando por su número se obtuvo un valor de $\mathrm{eff} \approx 0.389$.
-No logré realizar un cálculo manual en línea con valores publicados para de esta medida, pero la biblioteca NetworkX provee una función que la calculó en $\approx 0.245$.
+% No logré realizar un cálculo manual en línea con valores publicados para esta medida, pero 
+La biblioteca NetworkX provee una función que la calculó en $\approx 0.245$.
 
 
 \paragraph{Distribución de grado}
